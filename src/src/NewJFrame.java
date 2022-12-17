@@ -30,7 +30,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new org.lib.awtextra.AbsoluteLayout());
 
         jButton1.setBackground(new java.awt.Color(242, 242, 242));
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
