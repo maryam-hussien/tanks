@@ -9,5 +9,9 @@
  * @author hp
  */
 public class player {
+    private static double x;
+    public static void main(String[] args) {
+        System.out.println("player" + x);
+    }
     
 }
