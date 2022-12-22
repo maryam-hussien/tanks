@@ -4,6 +4,7 @@ public class Enemy {
     private int health;
 
     public Enemy(double x, double y, int health) {
+
         this.x = x;
         this.y = y;
         this.health = health;
