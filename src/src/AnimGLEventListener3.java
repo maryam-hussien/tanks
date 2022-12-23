@@ -1,30 +1,30 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
-import java.awt.event.*;
-import java.io.IOException;
-import javax.media.opengl.*;
 
+import javax.media.opengl.*;
+import javax.media.opengl.glu.GLU;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.concurrent.TimeUnit;
-import javax.media.opengl.glu.GLU;
 
-public class AnimGLEventListener3 extends AnimListener {
+public class AnimGLEventListener3<GLAutoDrawable> extends AnimListener {
     int direction = 0 ; //0= right , 1 = left
 
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
 
-    double y0 = 5 ;
+    double y0 = 8 ;
     long timer = 0;
     int animationIndex = 0;
     int maxWidth = 100;
     int maxHeight = 100;
-    int x = maxWidth / 2, y = maxHeight / 2;
+    int x = maxWidth / 2, y = maxHeight / 6;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String textureNames[] = {"plane_default.png","tank down.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    String textureNames[] = {"plane_default.png","tank right.png", "tank left.png", "tank down .png", "tank up.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -41,9 +41,9 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textureNames.length, textures, 0);
 
-            for (int i = 1; i < textureNames.length; i++) {
-                try {
-                    texture[i] = TextureReader.readTexture(assetsFolderName + "//" + textureNames[i], true);
+        for (int i = 1; i < textureNames.length; i++) {
+            try {
+                texture[i] = TextureReader.readTexture(assetsFolderName + "//" + textureNames[i], true);
                 gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
 
 //                mipmapsFromPNG(gl, new GLU(), texture[i]);
@@ -80,7 +80,7 @@ public class AnimGLEventListener3 extends AnimListener {
                 e.printStackTrace();
             }
         }
-        gl.glOrtho(-600.0, 600.0, -600.0, 600.0, -1.0, 1.0);
+        gl.glOrtho(0.0, 0.0, 0.0, 0.0, -1.0, 1.0);
     }
 
     public void display(GLAutoDrawable gld) {
@@ -139,7 +139,7 @@ public class AnimGLEventListener3 extends AnimListener {
             case 0 : angle =0;break;
             case 1 : angle =180;break;
             case 2 : angle =90;break;
-            default :angle=0;
+            default :angle=90;
         }
         gl.glPushMatrix();
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
@@ -177,7 +177,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
 
         gl.glPushMatrix();
-        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 6.0) - 0.9, 0);
         gl.glScaled(0.1 * scale, 0.1 * scale, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
@@ -283,7 +283,7 @@ public class AnimGLEventListener3 extends AnimListener {
             } else {
                 if (isKeyPressed(KeyEvent.VK_UP)) {
                     if (y < maxHeight - 10) {
-                     //   y++;
+                        //   y++;
                     }
                     direction = 2;
                 }
