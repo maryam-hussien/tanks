@@ -1,4 +1,4 @@
-public class Bullet {
+/*public class Bullet {
     long start, lifeTime;
     Directions direction;
     float x, y;
@@ -20,4 +20,4 @@ public class Bullet {
             int dY = (int) ((initY - y) * (initY - y));
             this.fired = dX + dY < 150;
         }
-}
+}*/
