@@ -12,7 +12,7 @@ import javax.media.opengl.glu.GLU;
 public class AnimGLEventListener3 extends AnimListener {
     int direction = 0 ; //0= right , 1 = left
 
-
+//js
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
 
     double y0 = 5 ;
