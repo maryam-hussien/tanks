@@ -1,24 +1,38 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
-import java.awt.event.*;
-import java.io.IOException;
-import javax.media.opengl.*;
 
+import javax.media.opengl.*;
+import javax.media.opengl.glu.GLU;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.concurrent.TimeUnit;
-import javax.media.opengl.glu.GLU;
 
 public class AnimGLEventListener3 extends AnimListener {
+    int direction = 0 ; //0= right , 1 = left
+    Directions directionb;
+    enum Directions{
+        up,
+
+    }
+
+    // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
+   Bullet bullet;
+    double y0 = 8 ;
     long timer = 0;
     int animationIndex = 0;
     int maxWidth = 100;
     int maxHeight = 100;
-    int x = maxWidth / 2, y = maxHeight / 2;
+    int x = maxWidth / 2, y = maxHeight / 6;
+    private long lastBulletFired = 0;
+    private long fireRate = 500;
+    private float playerSpeed = 0.5f;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    ArrayList<Bullet> bullets = new ArrayList<>();
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String textureNames[] = {"plane_default.png","tank down.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    String textureNames[] = {"plane_default.png","tank right.png", "tank left.png", "tank down .png", "tank up.png","b1.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -35,6 +49,25 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textureNames.length, textures, 0);
 
+        for (int i = 1; i < textureNames.length; i++) {
+            try {
+                texture[i] = TextureReader.readTexture(assetsFolderName + "//" + textureNames[i], true);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
+
+//                mipmapsFromPNG(gl, new GLU(), texture[i]);
+                new GLU().gluBuild2DMipmaps(
+                        GL.GL_TEXTURE_2D,
+                        GL.GL_RGBA, // Internal Texel Format,
+                        texture[i].getWidth(), texture[i].getHeight(),
+                        GL.GL_RGBA, // External format from image,
+                        GL.GL_UNSIGNED_BYTE,
+                        texture[i].getPixels() // Imagedata
+                );
+            } catch (IOException e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+        }
 
         for (int i = 0; i < textureNames.length; i++) {
             try {
@@ -55,7 +88,7 @@ public class AnimGLEventListener3 extends AnimListener {
                 e.printStackTrace();
             }
         }
-        gl.glOrtho(-600.0, 600.0, -600.0, 600.0, -1.0, 1.0);
+        gl.glOrtho(0.0, 0.0, 0.0, 0.0, -1.0, 1.0);
     }
 
     public void display(GLAutoDrawable gld) {
@@ -66,14 +99,18 @@ public class AnimGLEventListener3 extends AnimListener {
 
         DrawBackground(gl);
         handleKeyPress();
-        animationIndex = animationIndex % 5;
+
+
+//        DrawGraph(gl);
+        DrawSprite(gl, x, (int) y0, animationIndex, 1 , direction);
+        animationIndex = animationIndex %6 ;
 
 //        DrawGraph(gl);
         //DrawSprite(gl, x, y, animationIndex, 2);
         //DrawPlane(gl, 0, 0, 0, 2);
 
 
-
+        DrawSprite(gl, x, y, 4, 0.3f, direction);
         if (timer % 100 == 0){
             enemies.add(new Enemy(-10,20,100));
         }
@@ -98,8 +135,40 @@ public class AnimGLEventListener3 extends AnimListener {
         System.out.println(enemies.size() + " enemies");
 
 
-    }
 
+
+
+    }
+    public void DrawSprite(GL gl, int x, int y, int index, float scale , int dir) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index+1]);	// Turn Blending On
+        int angle = 0;
+        switch(direction){
+            case 0 : angle =0;break;
+            case 1 : angle =180;break;
+            case 2 : angle =90;break;
+            default :angle=90;
+        }
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.1 * scale, 0.1 * scale, 1);
+        gl.glRotated(angle, 0, 0, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 
@@ -116,7 +185,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
 
         gl.glPushMatrix();
-        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 6.0) - 0.9, 0);
         gl.glScaled(0.1 * scale, 0.1 * scale, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
@@ -183,33 +252,7 @@ public class AnimGLEventListener3 extends AnimListener {
     /*
      * KeyListener
      */
-    public void handleKeyPress() {
 
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            if (x > 0) {
-                x--;
-            }
-            animationIndex++;
-        }
-        if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            if (x < maxWidth - 10) {
-                x++;
-            }
-            animationIndex++;
-        }
-        if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            if (y > 0) {
-                y--;
-            }
-            animationIndex++;
-        }
-        if (isKeyPressed(KeyEvent.VK_UP)) {
-            if (y < maxHeight - 10) {
-                y++;
-            }
-            animationIndex++;
-        }
-    }
 
     public BitSet keyBits = new BitSet(256);
 
@@ -228,6 +271,38 @@ public class AnimGLEventListener3 extends AnimListener {
     @Override
     public void keyTyped(final KeyEvent event) {
         // don't care
+    }
+
+    public void handleKeyPress() {
+        if(isKeyPressed(KeyEvent.VK_SPACE)){
+            if(lastBulletFired + fireRate < System.currentTimeMillis()){
+                lastBulletFired = System.currentTimeMillis();
+                bullets.add(new Bullet(directionb, x, y, 10000));
+            }
+        }
+
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            if (x > 0) {
+                x--;
+            }
+            //   animationIndex++;
+            direction = 1;
+        } else {
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (x < maxWidth - 10) {
+                    x++;
+                }
+                //   animationIndex++;
+                direction = 0;
+            } else {
+                if (isKeyPressed(KeyEvent.VK_UP)) {
+                    if (y < maxHeight - 10) {
+                        //   y++;
+                    }
+                    direction = 2;
+                }
+            }
+        }
     }
 
     public boolean isKeyPressed(final int keyCode) {
