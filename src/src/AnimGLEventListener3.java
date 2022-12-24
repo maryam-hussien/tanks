@@ -293,6 +293,27 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glDisable(GL.GL_BLEND);
     }
 
+    // collision detection method
+    private boolean isCollied(double r1, double r2 , double x1, double y1, double x2, double y2){
+
+        if (dist(x1, y1, x2, y2) < r1+r2){
+
+
+            return true;
+        }
+        else {
+
+            return false;
+        }
+    }
+    // calculate the dist between 2 objects
+    private double dist(double x1, double y1, double x2, double y2){
+        double x = x1 - x2;
+        double y = y1 - y2;
+
+        return Math.sqrt((x*x)+(y*y));
+    }
+
     /*
      * KeyListener
      */
