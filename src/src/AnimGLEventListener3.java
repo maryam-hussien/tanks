@@ -1,35 +1,29 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
-
-import javax.media.opengl.*;
-import javax.media.opengl.glu.GLU;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
+import javax.media.opengl.*;
+
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.concurrent.TimeUnit;
+import javax.media.opengl.glu.GLU;
 
 public class AnimGLEventListener3 extends AnimListener {
     int direction = 0 ; //0= right , 1 = left
-    Directions directionb;
-    enum Directions{
-        up,
 
-    }
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-   Bullet bullet;
+    int direction1 =0 ;
+
     double y0 = 8 ;
     long timer = 0;
     int animationIndex = 0;
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 6;
-    private long lastBulletFired = 0;
-    private long fireRate = 500;
-    private float playerSpeed = 0.5f;
+    int x1 = maxWidth / 2, y1 = maxHeight / 8;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    ArrayList<Bullet> bullets = new ArrayList<>();
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
     String textureNames[] = {"plane_default.png","tank right.png", "tank left.png", "tank down .png", "tank up.png","b1.png", "Back.png"};
@@ -103,14 +97,20 @@ public class AnimGLEventListener3 extends AnimListener {
 
 //        DrawGraph(gl);
         DrawSprite(gl, x, (int) y0, animationIndex, 1 , direction);
-        animationIndex = animationIndex %6 ;
+        animationIndex = animationIndex % 5;
 
 //        DrawGraph(gl);
         //DrawSprite(gl, x, y, animationIndex, 2);
         //DrawPlane(gl, 0, 0, 0, 2);
 
+        switch(direction){
+            case 0 : x++;break;
+            case 1 : x--;break;
+            case 2 : y++;break;
 
-        DrawSprite(gl, x, y, 4, 0.3f, direction);
+        }
+        DrawSprite(gl, x1, (int) y1, 4, 0.2f , direction);
+
         if (timer % 100 == 0){
             enemies.add(new Enemy(-10,20,100));
         }
@@ -204,7 +204,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glDisable(GL.GL_BLEND);
     }
 
-    public void DrawSprite(GL gl, int x, int y, int index, float scale) {
+ /*   public void DrawSprite(GL gl, int x, int y, int index, float scale) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
 
@@ -226,7 +226,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
-    }
+    }*/
 
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
@@ -274,12 +274,6 @@ public class AnimGLEventListener3 extends AnimListener {
     }
 
     public void handleKeyPress() {
-        if(isKeyPressed(KeyEvent.VK_SPACE)){
-            if(lastBulletFired + fireRate < System.currentTimeMillis()){
-                lastBulletFired = System.currentTimeMillis();
-                bullets.add(new Bullet(directionb, x, y, 10000));
-            }
-        }
 
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
             if (x > 0) {
