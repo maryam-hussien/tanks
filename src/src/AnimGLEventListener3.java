@@ -1,29 +1,35 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
-import java.awt.event.*;
-import java.io.IOException;
-import javax.media.opengl.*;
 
+import javax.media.opengl.*;
+import javax.media.opengl.glu.GLU;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.concurrent.TimeUnit;
-import javax.media.opengl.glu.GLU;
 
 public class AnimGLEventListener3 extends AnimListener {
     int direction = 0 ; //0= right , 1 = left
+    int dir = 0;
+    enum Directions{
+        up,
 
+    }
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    int direction1 =0 ;
-
+    Bullet bullet;
     double y0 = 8 ;
     long timer = 0;
     int animationIndex = 0;
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 6;
-    int x1 = maxWidth / 2, y1 = maxHeight / 8;
+    private long lastBulletFired = 0;
+    private long fireRate = 500;
+    private float playerSpeed = 0.5f;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    ArrayList<Bullet> bullets = new ArrayList<>();
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
     String textureNames[] = {"plane_default.png","tank right.png", "tank left.png", "tank down .png", "tank up.png","b1.png", "Back.png"};
@@ -97,19 +103,13 @@ public class AnimGLEventListener3 extends AnimListener {
 
 //        DrawGraph(gl);
         DrawSprite(gl, x, (int) y0, animationIndex, 1 , direction);
-        animationIndex = animationIndex % 5;
+        animationIndex = animationIndex %6 ;
 
 //        DrawGraph(gl);
         //DrawSprite(gl, x, y, animationIndex, 2);
         //DrawPlane(gl, 0, 0, 0, 2);
 
-        switch(direction){
-            case 0 : x++;break;
-            case 1 : x--;break;
-            case 2 : y++;break;
 
-        }
-        DrawSprite(gl, x1, (int) y1, 4, 0.2f , direction);
 
         if (timer % 100 == 0){
             enemies.add(new Enemy(-10,20,100));
@@ -125,8 +125,21 @@ public class AnimGLEventListener3 extends AnimListener {
             if (enemies.get(i).x > 100){
                 enemies.remove(i);
             }
+            for (Bullet bullet : bullets) {
+                bullet.y++;
+            }
+
+
 
         }
+
+
+        DrawBullet(gl, x, y, 0.3f);
+        for(int i = 0; i < bullets.size(); i++){
+
+            moveBullet(gl,i);
+        }
+        System.out.println(bullets.size() + " bullet");
 
 
 
@@ -139,6 +152,9 @@ public class AnimGLEventListener3 extends AnimListener {
 
 
     }
+
+
+
     public void DrawSprite(GL gl, int x, int y, int index, float scale , int dir) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index+1]);	// Turn Blending On
@@ -168,6 +184,34 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
+    }
+    public void DrawBullet(GL gl, double x, double y, float scale){
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-2]);	// Turn Blending On
+
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.1 * scale, 0.1 * scale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+    private void moveBullet(GL gl,int i) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glPushMatrix();
+        DrawBullet( gl, bullets.get(i).x, bullets.get(i).y++, 0.2f);
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
@@ -204,7 +248,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glDisable(GL.GL_BLEND);
     }
 
- /*   public void DrawSprite(GL gl, int x, int y, int index, float scale) {
+    public void DrawSprite(GL gl, int x, int y, int index, float scale) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
 
@@ -226,7 +270,7 @@ public class AnimGLEventListener3 extends AnimListener {
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
-    }*/
+    }
 
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
@@ -274,6 +318,12 @@ public class AnimGLEventListener3 extends AnimListener {
     }
 
     public void handleKeyPress() {
+        if(isKeyPressed(KeyEvent.VK_SPACE)){
+            System.out.println("s");
+            bullets.add(new Bullet(x,y,dir,100));
+
+
+        }
 
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
             if (x > 0) {

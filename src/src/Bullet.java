@@ -1,24 +1,25 @@
- public class Bullet {
-
-    long start, lifeTime;
-     AnimGLEventListener3.Directions directionb;
-    float x, y;
-    boolean fired;
+public class Bullet {
+    public double x;
+    public double y;
+    public int dir;
+    long  start,lifeTime;
     float initX, initY;
-    Bullet bullet;
+    boolean fired;
 
-   public Bullet(AnimGLEventListener3.Directions directionb, float x, float y, int lifetime) {
-        this.directionb = directionb;
-        this.x = initX = x;
-        this.y = initY = y;
-        this.fired = true;
+    public Bullet(double x, double y, int dir ,int lifetime) {
+
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
         start = System.currentTimeMillis();
         lifeTime = lifetime;
+        this.fired = true;
+
     }
-        public void invalidate(){
-            fired = start+lifeTime > System.currentTimeMillis();
-            int dX = (int) ((initX - x) * (initX - x));
-            int dY = (int) ((initY - y) * (initY - y));
-            this.fired = dX + dY < 150;
-        }
+    public void invalidate(){
+        fired = start+lifeTime > System.currentTimeMillis();
+        int dX = (int) ((initX - x) * (initX - x));
+        int dY = (int) ((initY - y) * (initY - y));
+        this.fired = dX + dY < 150;
+    }
 }
