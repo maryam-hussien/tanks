@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../../../JOGLwin/lib64/gluegen-rt.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../../../JOGLwin/lib64/jogl.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" />
     </CLASSES>
     <JAVADOC />
     <NATIVE>
@@ -10,7 +11,9 @@
       <root url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" />
       <root url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" />
       <root url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" />
+      <root url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" />
     </NATIVE>
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../JOGLwin/lib64" recursive="false" />
   </library>
 </component>

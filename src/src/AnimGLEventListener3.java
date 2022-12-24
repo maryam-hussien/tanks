@@ -3,21 +3,26 @@ import Textures.TextureReader;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.GLU;
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 
-public class AnimGLEventListener3 extends AnimListener {
+public class AnimGLEventListener3 extends AnimListener  {
     int direction = 0 ; //0= right , 1 = left
     int dir = 0;
+
+    public void setVisible(boolean b) {
+    }
+
     enum Directions{
         up,
 
     }
 
-    // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
+     //Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
     Bullet bullet;
     double y0 = 8 ;
     long timer = 0;
