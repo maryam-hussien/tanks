@@ -5,9 +5,8 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jfreechart-1.0.19-swt" level="project" />
-    <orderEntry type="library" name="lib32" level="project" />
+    <orderEntry type="library" name="JOGLwin" level="project" />
+    <orderEntry type="library" name="AbsoluteLayout" level="project" />
     <orderEntry type="library" name="lib64" level="project" />
-    <orderEntry type="library" name="AbsoluteLayout1" level="project" />
   </component>
 </module>
