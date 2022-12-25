@@ -45,7 +45,7 @@ import java.awt.event.ActionListener;
 
         setTitle("Anim Test");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setVisible(true);
         setFocusable(true);
