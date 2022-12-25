@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jfreechart-1.0">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../algo/jfreechart-1.0.19" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../algo/jfreechart-1.0.19" recursive="false" />
+  </library>
+</component>

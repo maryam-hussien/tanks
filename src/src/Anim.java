@@ -1,4 +1,3 @@
-
 import Textures.AnimListener;
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.FPSAnimator;
@@ -8,9 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 
 //import java.awt.event.ActionEvent
    public class Anim extends JFrame implements ActionListener {
