@@ -42,9 +42,9 @@ public class anim2 extends JFrame implements ActionListener {
         animator.add(glcanvas);
         animator.start();
 
-        setTitle("Anim Test");
+        setTitle("Anim2 Test");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 500);
+        setSize(1200, 500);
         setLocationRelativeTo(null);
         setVisible(true);
         setFocusable(true);

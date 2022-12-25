@@ -8,11 +8,21 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.BitSet;
 
 
 public class AnimGLEventListener extends AnimListener {
+    int maxWidth = 100;
+    int maxHeight = 100;
+    int x = 0, y = 0;
+    int animationIndex = 0;
 
-    String textureNames[]  ={ "Back.png"};
+
+    //Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
+
+
+    String textureNames[]  ={ "tank right.png", "tank left.png", "tank down .png", "tank up.png","Back.bng"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -71,33 +81,68 @@ public class AnimGLEventListener extends AnimListener {
         }
         gl.glOrtho(0.0, 0.0, 0.0, 0.0, -1.0, 1.0);
     }
-
-    @Override
     public void display(GLAutoDrawable gld) {
 
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);       //Clear The Screen And The Depth Buffer
         gl.glLoadIdentity();
-        //45
 
         DrawBackground(gl);
+        handleKeyPress();
+
+
+
+
+        DrawSprite(gl, x, y,animationIndex , 1);{
+            animationIndex = animationIndex %4 ;
+
     }
 
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+        @Override
+   
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 
     public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
     }
-    void drawpolyCircle(GL gl, Color c, int r , double sides, double startAngle , int steps ){
-        gl.glColor3fv(c.getColorComponents(null), 0);
-        //  gl.glColor3f(0.0f, 0.0f, 1.0f);
 
-        gl.glBegin(GL.GL_POLYGON);
-        for (double i=startAngle;i<360*steps+startAngle;i+=steps*360.0/sides){
-            gl.glVertex2d (r*Math.cos(Math.toRadians(i)),r*Math.sin(Math.toRadians(i)));
-        }
+    public void DrawSprite(GL gl,int x, int y, int index, float scale){
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index+1]);	// Turn Blending On
+
+        gl.glPushMatrix();
+        gl.glTranslated( x/(maxWidth/2.0), y/(maxHeight/2.0), 0);
+        gl.glScaled(0.1*scale, 0.1*scale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
         gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
     }
+
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length -1]);  // Turn Blending On
@@ -118,21 +163,53 @@ public class AnimGLEventListener extends AnimListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
+    public void handleKeyPress() {
+
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            if (x > -maxWidth/2+3) {
+                x--;
+            }
+        }
+        if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+            if (x < maxWidth/2-3) {
+                x++;
+            }
+        }
+
+
+        }
+
+
+
+    public BitSet keyBits = new BitSet(256);
 
     @Override
-    public void keyTyped(KeyEvent ke) {
-
+    public void keyPressed(final KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        keyBits.set(keyCode);
     }
 
     @Override
-    public void keyPressed(KeyEvent ke) {
-
+    public void keyReleased(final KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        keyBits.clear(keyCode);
     }
 
     @Override
-    public void keyReleased(KeyEvent ke) {
-
+    public void keyTyped(final KeyEvent event) {
+        // don't care
     }
+
+    public boolean isKeyPressed(final int keyCode) {
+        return keyBits.get(keyCode);
+    }
+
+
+
+
+    //}
+
+
 
 
     @Override
