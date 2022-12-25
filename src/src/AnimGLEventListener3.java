@@ -1,15 +1,14 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.glu.GLU;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import javax.media.opengl.*;
-
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.concurrent.TimeUnit;
-import javax.media.opengl.glu.GLU;
 
 public class AnimGLEventListener3 extends AnimListener {
     int direction = 0 ; //0= right , 1 = left
@@ -30,7 +29,7 @@ public class AnimGLEventListener3 extends AnimListener {
     Player player   = new Player(x, 0, 100, false, "mahmoud");
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String textureNames[] = {"plane_default.png","Bomb_1.png","Bullet_1.png","tank down.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    String textureNames[] = {"plane_default.png","Bomb_1.png","Bullet_1.png","tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -104,10 +103,10 @@ public class AnimGLEventListener3 extends AnimListener {
         animationIndex = animationIndex % 5;
 
 //        DrawGraph(gl);
-        DrawSprite(gl, player.x, player.y, 0, 2);
+        DrawSprite(gl, player.x, player.y, 3, 2.8f);
         //DrawPlane(gl, 0, 0, 0, 2);
 
-        if (timer %10 == 0) {
+        if (timer %3 == 0) {
             shootBullet();
 
         }
