@@ -2,7 +2,6 @@ import Textures.AnimListener;
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.FPSAnimator;
 
-
 import javax.media.opengl.GLCanvas;
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 //import java.awt.event.ActionEvent
-   public class Anim extends JFrame implements ActionListener {
+public class anim2 extends JFrame implements ActionListener {
 
-    public Anim() {
+    public anim2() {
 
 
     }
@@ -21,15 +20,15 @@ import java.awt.event.ActionListener;
     }
 
     private void add(JButton me) {
-        
+
     }
 
     public static void main(String[] args) {
-        new Anim(new AnimGLEventListener3());
+        new anim2(new AnimGLEventListener());
     }
     //}
 
-    public Anim(AnimListener aListener)  {
+    public anim2(AnimListener aListener)  {
         GLCanvas glcanvas;
         Animator animator;
 
@@ -45,7 +44,7 @@ import java.awt.event.ActionListener;
 
         setTitle("Anim Test");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setVisible(true);
         setFocusable(true);
