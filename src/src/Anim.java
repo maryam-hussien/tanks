@@ -2,6 +2,7 @@ import Textures.AnimListener;
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.FPSAnimator;
 
+
 import javax.media.opengl.GLCanvas;
 import javax.swing.*;
 import java.awt.*;
