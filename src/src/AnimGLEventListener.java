@@ -8,21 +8,17 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
 
 
 public class AnimGLEventListener extends AnimListener {
+    int animationIndex = 0;
+    double y0 = 8 ;
+    int direction = 0 ; //0= right , 1 = left
     int maxWidth = 100;
     int maxHeight = 100;
-    int x = 0, y = 0;
-    int animationIndex = 0;
-
-
-    //Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-
-
-    String textureNames[]  ={ "tank right.png", "tank left.png", "tank down .png", "tank up.png","Back.bng"};
+    int x = maxWidth / 2, y = maxHeight / 6;
+    String textureNames[]  ={ "tank right.png", "tank left.png", "tank down .png", "tank up.png","Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -81,51 +77,44 @@ public class AnimGLEventListener extends AnimListener {
         }
         gl.glOrtho(0.0, 0.0, 0.0, 0.0, -1.0, 1.0);
     }
+
+    @Override
     public void display(GLAutoDrawable gld) {
 
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);       //Clear The Screen And The Depth Buffer
         gl.glLoadIdentity();
+        //45
 
         DrawBackground(gl);
-        handleKeyPress();
-
-
-
-
-        DrawSprite(gl, x, y,animationIndex , 1);{
-            animationIndex = animationIndex %4 ;
+        DrawSprite(gl, x, (int) y0, animationIndex, 1 , direction);
+        animationIndex = animationIndex %4 ;
 
     }
 
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-        @Override
-   
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 
-    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
+    @Override
+    public void displayChanged(GLAutoDrawable glAutoDrawable, boolean b, boolean b1) {
+
     }
 
-    public void DrawSprite(GL gl,int x, int y, int index, float scale){
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index+1]);	// Turn Blending On
 
+    public void DrawSprite(GL gl, int x, int y, int index, float scale , int dir) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);	// Turn Blending On
+        int angle = 0;
+        switch(direction){
+            case 0 : angle =0;break;
+            case 1 : angle =180;break;
+            case 2 : angle =90;break;
+            default :angle=90;
+        }
         gl.glPushMatrix();
-        gl.glTranslated( x/(maxWidth/2.0), y/(maxHeight/2.0), 0);
-        gl.glScaled(0.1*scale, 0.1*scale, 1);
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.1 * scale, 0.1 * scale, 1);
+        gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
         // Front Face
@@ -142,13 +131,15 @@ public class AnimGLEventListener extends AnimListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
-
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length -1]);  // Turn Blending On
 
         gl.glPushMatrix();
         gl.glBegin(GL.GL_QUADS);
+
+
+
         // Front Face
         gl.glTexCoord2f(0.0f, 0.0f);
         gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -163,53 +154,60 @@ public class AnimGLEventListener extends AnimListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
-    public void handleKeyPress() {
-
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            if (x > -maxWidth/2+3) {
-                x--;
-            }
-        }
-        if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            if (x < maxWidth/2-3) {
-                x++;
-            }
-        }
-
-
-        }
-
-
 
     public BitSet keyBits = new BitSet(256);
-
     @Override
-    public void keyPressed(final KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        keyBits.set(keyCode);
+    public void keyTyped(KeyEvent ke) {
+
     }
+    public void handleKeyPress() {
+        //if(isKeyPressed(KeyEvent.VK_SPACE)){
+          //  System.out.println("s");
+           // bullets.add(new Bullet(x,y,dir,100));
 
-    @Override
-    public void keyReleased(final KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        keyBits.clear(keyCode);
-    }
 
-    @Override
-    public void keyTyped(final KeyEvent event) {
-        // don't care
+     //   }
+
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            if (x > 0) {
+                x--;
+            }
+            //   animationIndex++;
+            direction = 1;
+        } else {
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (x < maxWidth - 10) {
+                    x++;
+                }
+                //   animationIndex++;
+                direction = 0;
+            } else {
+                if (isKeyPressed(KeyEvent.VK_UP)) {
+                    if (y < maxHeight - 10) {
+                        //   y++;
+                    }
+                    direction = 2;
+                }
+            }
+        }
     }
 
     public boolean isKeyPressed(final int keyCode) {
         return keyBits.get(keyCode);
     }
 
+    public static void main(String[] args) {
+        new Anim(new AnimGLEventListener());
+    }
+    @Override
+    public void keyPressed(KeyEvent ke) {
 
+    }
 
+    @Override
+    public void keyReleased(KeyEvent ke) {
 
-    //}
-
-
+    }
 
 
     @Override
