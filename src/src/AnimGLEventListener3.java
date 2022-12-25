@@ -150,6 +150,7 @@ public class AnimGLEventListener3 extends AnimListener {
 
         }
 
+        //bomb enemy hits the player
         for (int i = 0; i < Bomb.size(); i++){
             if (isCollied(3,2, player.x, player.y,Bomb.get(i).x,Bomb.get(i).y)){
                     System.out.println("collied");
