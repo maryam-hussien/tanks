@@ -14,6 +14,7 @@ public class AnimGLEventListener extends AnimListener {
     int animationIndex = 0;
     double y0 = 8 ;
     int direction = 0; //0= right , 1 = left
+    int direction1 = 1;
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
@@ -87,9 +88,15 @@ public class AnimGLEventListener extends AnimListener {
 
         DrawBackground(gl);
         handleKeyPress();
-        DrawSprite(gl, x,( int)y0, animationIndex, 1,direction);
         animationIndex = animationIndex % 4;
+        DrawSprite(gl, x,( int)y0, animationIndex, 1,direction);
 
+
+        gl.glPushMatrix();
+        gl.glTranslated(0.7,0,0);
+        DrawSprite2(gl, x, (int) y0, animationIndex, 1, direction1);
+        movetank();
+        gl.glPopMatrix();
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -113,7 +120,37 @@ public class AnimGLEventListener extends AnimListener {
         // }
         gl.glPushMatrix();
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-        gl.glScaled(0.4 * scale, 0.4 * scale, 1);
+        gl.glScaled(0.25 * scale, 0.25 * scale, 1);
+        //gl.glRotated(angle, 0, 0, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+    public void DrawSprite2(GL gl, int x, int y, int index, float scale, int direction) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index+2]);    // Turn Blending On
+        // int angle = 0;
+        //  switch(direction){
+        // case 0 : angle =0;break;
+        // case 1 : angle =180;break;
+        //case 2 : angle =90;break;
+        //  default :angle=0;
+        // }
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.15 * scale, 0.15 * scale, 1);
         //gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
@@ -167,8 +204,33 @@ public class AnimGLEventListener extends AnimListener {
         int keyCode = event.getKeyCode();
         keyBits.set(keyCode);
     }
-
+    public void movetank(){
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            if (x > 0) {
+                x--;
+            }
+            //   animationIndex++;
+            direction1 = 0;
+        } else {
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (x < maxWidth - 10) {
+                    x++;
+                }
+                //   animationIndex++;
+                direction1 = 1;
+            } else {
+                if (isKeyPressed(KeyEvent.VK_UP)) {
+                    if (y < maxHeight - 10) {
+                        //   y++;
+                    }
+                    direction1 = 2;
+                }
+            }
+        }
+    }
     public void handleKeyPress() {
+
+
 
         if (isKeyPressed(KeyEvent.VK_1)) {
             if (x > 0) {
