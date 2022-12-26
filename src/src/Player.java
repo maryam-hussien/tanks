@@ -22,6 +22,7 @@ public class Player {
         this.x = x;
         this.y = y;
         this.health = health;
+        this.name = name;
         this.count = 0;
         this.isDead = isDead;
 

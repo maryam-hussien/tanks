@@ -25,13 +25,15 @@ public class AnimGLEventListener3 extends AnimListener {
     int x = maxWidth / 2, y = maxHeight / 2;
     private long audioContext;
     private long audioDevice;
+    username username = new username();
+    private String name = username.name;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     ArrayList<Bomb> Bomb = new ArrayList<Bomb>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-    Player player = new Player(x, 0, 100, false, "mahmoud");
+    Player player = new Player(x, 0, 100, false, name);
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String textureNames[] = {"plane_default.png", "Bomb_1.png", "Bullet_1.png", "tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    String textureNames[] = {"plane.png", "Bomb_1.png", "Bullet_1.png", "tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
