@@ -218,6 +218,7 @@ public class TwoPlayerGame extends AnimListener {
 
                     if (enemies.get(j).health <= 0){
                         player1.count+=1;
+                        System.out.println("hit p1: " + player1.count );
                         enemies.remove(j);
                     }
                 }
@@ -233,6 +234,7 @@ public class TwoPlayerGame extends AnimListener {
 
                     if (enemies.get(j).health <= 0){
                         player2.count+=1;
+                        System.out.println("hit p2: " + player2.count );
                         enemies.remove(j);
                     }
                 }

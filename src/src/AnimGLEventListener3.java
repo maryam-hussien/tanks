@@ -31,7 +31,7 @@ public class AnimGLEventListener3 extends AnimListener {
     Player player = new Player(x, 0, 100, false, "mahmoud");
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String textureNames[] = {"plane_default.png", "Bomb_1.png", "Bullet_1.png", "tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    String textureNames[] = {"plane.png", "Bomb_1.png", "Bullet_1.png", "tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
