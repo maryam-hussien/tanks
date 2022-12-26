@@ -17,7 +17,7 @@ public class AnimGLEventListener extends AnimListener {
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
-    String textureNames[] = {"tank right.png","tank left.png","tank up.png","tank down.png","Back.png"};
+    String textureNames[] = {"tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -88,7 +88,7 @@ public class AnimGLEventListener extends AnimListener {
         DrawBackground(gl);
         handleKeyPress();
         DrawSprite(gl, x,( int)y0, animationIndex, 1,direction);
-        animationIndex = animationIndex % 5;
+        animationIndex = animationIndex % 4;
 
     }
 
@@ -113,7 +113,7 @@ public class AnimGLEventListener extends AnimListener {
         // }
         gl.glPushMatrix();
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-        gl.glScaled(0.1 * scale, 0.1 * scale, 1);
+        gl.glScaled(0.4 * scale, 0.4 * scale, 1);
         //gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);

@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 
     }
 
-    private void setLocationRelativeTo(int i) {
+    private void setLocationRelativeTo() {
     }
 
     private void add(JButton me) {
@@ -44,8 +44,9 @@ import java.awt.event.ActionListener;
 
         setTitle("Anim Test");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setSize(1000, 600);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(this);
         setVisible(true);
         setFocusable(true);
         glcanvas.requestFocus();
