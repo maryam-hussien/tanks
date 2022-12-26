@@ -24,7 +24,7 @@ public class anim2 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new anim2(new AnimGLEventListener());
+        new anim2(new TwoPlayerGame());
     }
     //}
 
