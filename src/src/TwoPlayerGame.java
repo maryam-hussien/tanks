@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 
-public class AnimGLEventListener extends AnimListener {
+public class TwoPlayerGame extends AnimListener {
     int animationIndex = 0;
     long timer = 0;
     double y0 = 8 ;
@@ -20,9 +20,17 @@ public class AnimGLEventListener extends AnimListener {
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
-    ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-    Player player2   = new Player(x, 0, 100, false, "maryam");
-    String textureNames[] = {"tank.png", "tank right.png", "tank left.png", "tank up.png" ,"Bullet_1.png", "Back.png"};
+
+    ArrayList<Bullet> bulletsPlayer1 = new ArrayList<Bullet>();
+    ArrayList<Bullet> bulletsPlayer2 = new ArrayList<Bullet>();
+
+    Player player1 = new Player(90, 5,100,false,"mahmoud");
+    Player player2 = new Player(10, 5, 100, false, "maryam");
+
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    ArrayList<Bomb> Bomb = new ArrayList<Bomb>();
+
+    String textureNames[] = { "tankp2.png","tankp1.png","plane.png", "Bomb_1.png","Bullet_1.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -92,58 +100,230 @@ public class AnimGLEventListener extends AnimListener {
 
         DrawBackground(gl);
         handleKeyPress();
+
         animationIndex = animationIndex % 4;
-        DrawSprite(gl, x,( int)y0, animationIndex, 1,direction);
-        if (timer %3 == 0) {
-            shootBullet1();
+
+        //Draw players
+        DrawSprite(gl, player1.x, player1.y, 0, 1.2f);
+        DrawSprite(gl, player2.x, player2.y, 1, 1.2f);
+
+        // moving players
+        movePlayer1();
+        movePlayer2();
+
+
+        // handle shoot for players
+        if (timer %10 == 0) {
+            shootBulletPlayer1();
+            shootBulletPlayer2();
 
         }
-        for(int i = 0; i < bullets.size(); i++){
-            moveBullet1(gl,i);
-            if (bullets.get(i).y > 100){
-                bullets.remove(i);
+
+        // player 1 bullets handler (move and remove the bullet)
+        for(int i = 0; i < bulletsPlayer1.size(); i++){
+            moveBulletPlayer1(gl,i);
+            if (bulletsPlayer1.get(i).y > 100){
+                bulletsPlayer1.remove(i);
 
             }
         }
 
+        // player 2 bullets handler (move and remove the bullet)
+        for(int i = 0; i < bulletsPlayer2.size(); i++){
+            moveBulletPlayer2(gl,i);
+            if (bulletsPlayer2.get(i).y > 100){
+                bulletsPlayer2.remove(i);
+
+            }
+        }
+
+        // adding new enemies
+        if (timer % 100 == 0){
+            enemies.add(new Enemy(-10,80,10));
+            enemies.add(new Enemy(110,80,10));
+
+        }
+
+        // adding bombs to every enemy
+        if (timer % 50 == 0) {
+            for (int i = 0; i < enemies.size(); i++) {
+
+                Bomb.add(new Bomb((int) enemies.get(i).x, (int) enemies.get(i).y, 10));
+
+
+            }
+        }
+
+        // moving enemies (planes)
+        for (int i = 0; i < enemies.size(); i++){
+
+            movePlane(gl,i);
+
+        }
+        // moving enemie's bomb
+        for (int i = 0; i < Bomb.size(); i++){
+
+            moveBomb(gl,i);
+
+        }
+        // remove enemies > 100 on x
+        for (int i = 0; i < enemies.size(); i++){
+
+            if (enemies.get(i).x > 100){
+                enemies.remove(i);
+            }
+
+        }
+        // remove bomb < -2 on y
+        for (int i = 0; i < Bomb.size(); i++){
+
+            if (Bomb.get(i).y <= -2){
+                Bomb.remove(i);
+            }
+
+        }
+        // handle bomb hits th players
+        for (int i = 0; i < Bomb.size(); i++){
+            if (isCollied(5,2, player1.x, player1.y,Bomb.get(i).x,Bomb.get(i).y)){
+                System.out.println("collied player 1");
+                player1.health-=Bomb.get(i).damage;
+                Bomb.remove(i);
+                System.out.println(player1.health);
+
+                if (player1.health <= 0){
+                    player1.x = 200;
+                }
+            }
+        }
+        for (int i = 0; i < Bomb.size(); i++){
+            if (isCollied(5,2, player2.x, player2.y,Bomb.get(i).x,Bomb.get(i).y)){
+                System.out.println("collied player 2");
+                player2.health-=Bomb.get(i).damage;
+                Bomb.remove(i);
+                System.out.println(player2.health);
+
+                if (player2.health <= 0){
+                    player2.x = 200;
+                }
+            }
+        }
+
+        // handle bullets p1 hits enemies
+        for(int i = 0; i < bulletsPlayer1.size(); i++){
+            for (int j = 0; j < enemies.size(); j++)
+                if (isCollied(5,3, bulletsPlayer1.get(i).x, bulletsPlayer1.get(i).y,enemies.get(j).x,enemies.get(j).y)){
+                    System.out.println("hit p1");
+                    enemies.get(j).health -= bulletsPlayer1.get(i).damage;
+                    bulletsPlayer1.remove(i);
+
+                    if (enemies.get(j).health <= 0){
+                        player1.count+=1;
+                        enemies.remove(j);
+                    }
+                }
+        }
+
+        // handle bullets p2 hits enemies
+        for(int i = 0; i < bulletsPlayer2.size(); i++){
+            for (int j = 0; j < enemies.size(); j++)
+                if (isCollied(5,3, bulletsPlayer2.get(i).x, bulletsPlayer2.get(i).y,enemies.get(j).x,enemies.get(j).y)){
+                    System.out.println("hit p2");
+                    enemies.get(j).health -= bulletsPlayer2.get(i).damage;
+                    bulletsPlayer2.remove(i);
+
+                    if (enemies.get(j).health <= 0){
+                        player2.count+=1;
+                        enemies.remove(j);
+                    }
+                }
+        }
+
+
+
+
+
+        timer++;
+
+    }
+    // move bombs
+    private void moveBomb(GL gl, int i){
+
+        DrawBomb( gl,Bomb.get(i).x ,  (Bomb.get(i).y-=Bomb.get(i).speed) , 3, 0.08F);
+    }
+
+    // draw bomb
+    public void DrawBomb(GL gl, int x, int y, int index, float scale) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
 
         gl.glPushMatrix();
-        gl.glTranslated(0.7,0,0);
-        DrawSprite2(gl, x, (int) y0, animationIndex, 1, direction1);
-        movetank();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled( 0.02,   scale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
         gl.glPopMatrix();
 
-        if (timer %3 == 0) {
-            shootBullet();
-
-        }
-        for(int i = 0; i < bullets.size(); i++){
-            moveBullet(gl,i);
-            if (bullets.get(i).y > 100){
-                bullets.remove(i);
-
-            }
-        }
+        gl.glDisable(GL.GL_BLEND);
     }
-    private void shootBullet() {
+
+    //  move planes(enemy)
+    public void movePlane(GL gl,int i ){
+
+        DrawPlane(gl, (int) enemies.get(i).x++ , (int) enemies.get(i).y,2,2);
+    }
+    // draw planes (enemy)
+    public void DrawPlane(GL gl, int x, int y, int index, float scale) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);  // Turn Blending On
+
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.1 * scale, 0.1 * scale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+
+    private void shootBulletPlayer1() {
         if (isKeyPressed(KeyEvent.VK_SPACE)) {
             System.out.println("s");
-            bullets.add(new Bullet(player2.x, player2.y, 10));
+            bulletsPlayer1.add(new Bullet(player1.x, player1.y, 10));
 
         }
     }
 
-    private void shootBullet1() {
-        if (isKeyPressed(KeyEvent.VK_5)) {
-            System.out.println("s");
-            bullets.add(new Bullet(player2.x, player2.y, 10));
+    private void shootBulletPlayer2() {
+        if (isKeyPressed(KeyEvent.VK_NUMPAD0)) {
+            System.out.println("0");
+            bulletsPlayer2.add(new Bullet(player2.x, player2.y, 10));
 
         }
     }
     private boolean isCollied(double r1, double r2 , double x1, double y1, double x2, double y2){
 
         if (dist(x1, y1, x2, y2) < r1+r2 ){
-
 
             return true;
         }
@@ -167,7 +347,7 @@ public class AnimGLEventListener extends AnimListener {
     }
 
 
-    public void DrawSprite(GL gl, int x, int y, int index, float scale, int direction) {
+    public void DrawSprite(GL gl, int x, int y, int index, float scale ) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);    // Turn Blending On
         // int angle = 0;
@@ -183,6 +363,7 @@ public class AnimGLEventListener extends AnimListener {
         //gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
+
         // Front Face
         gl.glTexCoord2f(0.0f, 0.0f);
         gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -250,18 +431,23 @@ public class AnimGLEventListener extends AnimListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
-    private void moveBullet(GL gl, int i){
-       int y=10;
-        DrawBullet( gl,bullets.get(i).x++ ,  (bullets.get(i).y)*bullets.get(i).speed, 2, 0.08F);
+
+    // moving bullet for p1
+    private void moveBulletPlayer1(GL gl, int i){
+
+        DrawBullet( gl,bulletsPlayer1.get(i).x ,  (bulletsPlayer1.get(i).y++)*bulletsPlayer1.get(i).speed, 2, 0.08F);
 
 
     }
-    private void moveBullet1(GL gl, int i){
-        int y=10;
-        DrawBullet( gl,bullets.get(i).x-- ,  (bullets.get(i).y)*bullets.get(i).speed, 2, 0.08F);
+
+    // moving bullet for p1
+    private void moveBulletPlayer2(GL gl, int i){
+
+        DrawBullet( gl,bulletsPlayer2.get(i).x ,  (bulletsPlayer2.get(i).y++)*bulletsPlayer2.get(i).speed, 2, 0.08F);
 
 
     }
+
 
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
@@ -298,27 +484,40 @@ public class AnimGLEventListener extends AnimListener {
         int keyCode = event.getKeyCode();
         keyBits.set(keyCode);
     }
-    public void movetank(){
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+    public void movePlayer1(){
+        if (isKeyPressed(KeyEvent.VK_A)) {
             if (x > 0) {
-                x--;
+                player1.x--;
             }
             //   animationIndex++;
-            direction1 = 0;
+
         } else {
-            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                if (x < maxWidth - 10) {
-                    x++;
+            if (isKeyPressed(KeyEvent.VK_D)) {
+                if (x > 0) {
+                    player1.x++;
                 }
                 //   animationIndex++;
-                direction1 = 1;
-            } else {
-                if (isKeyPressed(KeyEvent.VK_UP)) {
-                    if (y < maxHeight - 10) {
-                        //   y++;
-                    }
-                    direction1 = 2;
+
+
+            }
+        }
+    }
+
+    public void movePlayer2(){
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            if (x > 0) {
+                player2.x--;
+            }
+            //   animationIndex++;
+
+        } else {
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (x > 0) {
+                    player2.x++;
                 }
+                //   animationIndex++;
+
+
             }
         }
     }
@@ -342,7 +541,7 @@ public class AnimGLEventListener extends AnimListener {
             } else {
                 if (isKeyPressed(KeyEvent.VK_3)) {
                     if (y < maxHeight - 10) {
-                          y++;
+                        y++;
                     }
                     direction = 2;
                 }
@@ -351,11 +550,11 @@ public class AnimGLEventListener extends AnimListener {
     }
 
     public boolean isKeyPressed( int keyCode) {
-          return keyBits.get(keyCode);
+        return keyBits.get(keyCode);
     }
 
     public static void main(String[] args) {
-        new anim2(new AnimGLEventListener());
+        new anim2(new TwoPlayerGame());
     }
 
 
