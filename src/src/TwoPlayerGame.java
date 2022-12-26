@@ -211,7 +211,7 @@ public class TwoPlayerGame extends AnimListener {
         // handle bullets p1 hits enemies
         for(int i = 0; i < bulletsPlayer1.size(); i++){
             for (int j = 0; j < enemies.size(); j++)
-                if (isCollied(5,3, bulletsPlayer1.get(i).x, bulletsPlayer1.get(i).y,enemies.get(j).x,enemies.get(j).y)){
+                if (isCollied(2,4, bulletsPlayer1.get(i).x, bulletsPlayer1.get(i).y,enemies.get(j).x,enemies.get(j).y)){
                     System.out.println("hit p1");
                     enemies.get(j).health -= bulletsPlayer1.get(i).damage;
                     bulletsPlayer1.remove(i);
@@ -227,7 +227,7 @@ public class TwoPlayerGame extends AnimListener {
         // handle bullets p2 hits enemies
         for(int i = 0; i < bulletsPlayer2.size(); i++){
             for (int j = 0; j < enemies.size(); j++)
-                if (isCollied(5,3, bulletsPlayer2.get(i).x, bulletsPlayer2.get(i).y,enemies.get(j).x,enemies.get(j).y)){
+                if (isCollied(2,4, bulletsPlayer2.get(i).x, bulletsPlayer2.get(i).y,enemies.get(j).x,enemies.get(j).y)){
                     System.out.println("hit p2");
                     enemies.get(j).health -= bulletsPlayer2.get(i).damage;
                     bulletsPlayer2.remove(i);
