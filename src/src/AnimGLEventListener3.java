@@ -1,12 +1,17 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -23,6 +28,8 @@ public class AnimGLEventListener3 extends AnimListener {
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
+   private long audioContext;
+   private long audioDevice;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     ArrayList<Bomb> Bomb = new ArrayList<Bomb>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
@@ -33,10 +40,8 @@ public class AnimGLEventListener3 extends AnimListener {
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
-    /*
-     5 means gun in array pos
-     x and y coordinate for gun
-     */
+
+
     public void init(GLAutoDrawable gld) {
 
         GL gl = gld.getGL();
@@ -64,6 +69,7 @@ public class AnimGLEventListener3 extends AnimListener {
                 System.out.println(e);
                 e.printStackTrace();
             }
+
         }
 
         for (int i = 0; i < textureNames.length; i++) {
@@ -309,6 +315,8 @@ public class AnimGLEventListener3 extends AnimListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
+
+
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 

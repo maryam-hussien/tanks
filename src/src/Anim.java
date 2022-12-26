@@ -1,8 +1,6 @@
 import Textures.AnimListener;
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.FPSAnimator;
-
-
 import javax.media.opengl.GLCanvas;
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +24,7 @@ import java.awt.event.ActionListener;
 
     public static void main(String[] args) {
         new Anim(new AnimGLEventListener3());
+        //private MediaPlayer mediaPlayer;
     }
     //}
 
