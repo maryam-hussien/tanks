@@ -7,18 +7,22 @@ import javax.media.opengl.glu.GLU;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
 
 
 public class AnimGLEventListener extends AnimListener {
     int animationIndex = 0;
+    long timer = 0;
     double y0 = 8 ;
     int direction = 0; //0= right , 1 = left
     int direction1 = 1;
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
-    String textureNames[] = {"tank.png", "tank right.png", "tank left.png", "tank up.png", "Back.png"};
+    ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    Player player2   = new Player(x, 0, 100, false, "maryam");
+    String textureNames[] = {"tank.png", "tank right.png", "tank left.png", "tank up.png" ,"Bullet_1.png", "Back.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -90,6 +94,17 @@ public class AnimGLEventListener extends AnimListener {
         handleKeyPress();
         animationIndex = animationIndex % 4;
         DrawSprite(gl, x,( int)y0, animationIndex, 1,direction);
+        if (timer %3 == 0) {
+            shootBullet1();
+
+        }
+        for(int i = 0; i < bullets.size(); i++){
+            moveBullet1(gl,i);
+            if (bullets.get(i).y > 100){
+                bullets.remove(i);
+
+            }
+        }
 
 
         gl.glPushMatrix();
@@ -97,8 +112,52 @@ public class AnimGLEventListener extends AnimListener {
         DrawSprite2(gl, x, (int) y0, animationIndex, 1, direction1);
         movetank();
         gl.glPopMatrix();
+
+        if (timer %3 == 0) {
+            shootBullet();
+
+        }
+        for(int i = 0; i < bullets.size(); i++){
+            moveBullet(gl,i);
+            if (bullets.get(i).y > 100){
+                bullets.remove(i);
+
+            }
+        }
+    }
+    private void shootBullet() {
+        if (isKeyPressed(KeyEvent.VK_SPACE)) {
+            System.out.println("s");
+            bullets.add(new Bullet(player2.x, player2.y, 10));
+
+        }
     }
 
+    private void shootBullet1() {
+        if (isKeyPressed(KeyEvent.VK_5)) {
+            System.out.println("s");
+            bullets.add(new Bullet(player2.x, player2.y, 10));
+
+        }
+    }
+    private boolean isCollied(double r1, double r2 , double x1, double y1, double x2, double y2){
+
+        if (dist(x1, y1, x2, y2) < r1+r2 ){
+
+
+            return true;
+        }
+        else {
+
+            return false;
+        }
+    }
+    private double dist(double x1, double y1, double x2, double y2){
+        double x = x1 - x2;
+        double y = y1 - y2;
+
+        return Math.sqrt((x*x)+(y*y));
+    }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 
@@ -119,7 +178,7 @@ public class AnimGLEventListener extends AnimListener {
         //  default :angle=0;
         // }
         gl.glPushMatrix();
-        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glTranslated(x / (maxWidth / 2.0) - 1, y / (maxHeight / 2.0) -1, 0);
         gl.glScaled(0.25 * scale, 0.25 * scale, 1);
         //gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
@@ -149,7 +208,7 @@ public class AnimGLEventListener extends AnimListener {
         //  default :angle=0;
         // }
         gl.glPushMatrix();
-        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glTranslated(x / (maxWidth / 2.0) -1, y / (maxHeight / 2.0) - 1, 0);
         gl.glScaled(0.15 * scale, 0.15 * scale, 1);
         //gl.glRotated(angle, 0, 0, 1);
         //System.out.println(x +" " + y);
@@ -167,6 +226,41 @@ public class AnimGLEventListener extends AnimListener {
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
+    }
+    public void DrawBullet(GL gl, int x, int y, int index, float scale) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-2]);  // Turn Blending On
+
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.01,  scale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+    private void moveBullet(GL gl, int i){
+       int y=10;
+        DrawBullet( gl,bullets.get(i).x++ ,  (bullets.get(i).y)*bullets.get(i).speed, 2, 0.08F);
+
+
+    }
+    private void moveBullet1(GL gl, int i){
+        int y=10;
+        DrawBullet( gl,bullets.get(i).x-- ,  (bullets.get(i).y)*bullets.get(i).speed, 2, 0.08F);
+
+
     }
 
     public void DrawBackground(GL gl) {
