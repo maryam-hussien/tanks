@@ -66,8 +66,8 @@ public class NewJFrame extends javax.swing.JFrame {
        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
     public void jButton2ActionPerformed(java.awt.event.ActionEvent evt)  {
-       // this.dispose();
-
+       this.dispose();
+      username2.main(null);
         // TODO add your handling code here:
     }//GEN-LAST:
     /**
