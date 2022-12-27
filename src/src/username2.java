@@ -8,7 +8,7 @@
  * @author HP
  */
 public class username2 extends javax.swing.JFrame {
-
+    public static String  name;
     /**
      * Creates new form username2
      */
@@ -104,7 +104,11 @@ public class username2 extends javax.swing.JFrame {
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-      anim2.main(null);       // TODO add your handling code here:
+        name = jTextField1.getText();
+        System.out.println(name);
+        dispose();
+        anim2.main(null);
+      // TODO add your handling code here:
     }
 
     /**

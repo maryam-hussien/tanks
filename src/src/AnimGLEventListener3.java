@@ -12,7 +12,7 @@ import java.util.BitSet;
 
 public class AnimGLEventListener3 extends AnimListener {
     int direction = 0; //0= right , 1 = left
-
+  username username= new username();
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
 
@@ -25,7 +25,7 @@ public class AnimGLEventListener3 extends AnimListener {
     int x = maxWidth / 2, y = maxHeight / 2;
     private long audioContext;
     private long audioDevice;
-    username username = new username();
+    //username username = new username();
     private String name = username.name;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     ArrayList<Bomb> Bomb = new ArrayList<Bomb>();
@@ -91,7 +91,7 @@ public class AnimGLEventListener3 extends AnimListener {
     }
 
     public void display(GLAutoDrawable gld) {
-
+        System.out.print(player.name);
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);       //Clear The Screen And The Depth Buffer
         gl.glLoadIdentity();
@@ -183,6 +183,7 @@ public class AnimGLEventListener3 extends AnimListener {
                     if (enemies.get(j).health <= 0) {
                         player.count += 1;
                         enemies.remove(j);
+                        System.out.println(player.name+" "+player.count);
                     }
                 }
         }

@@ -24,8 +24,8 @@ public class TwoPlayerGame extends AnimListener {
     ArrayList<Bullet> bulletsPlayer1 = new ArrayList<Bullet>();
     ArrayList<Bullet> bulletsPlayer2 = new ArrayList<Bullet>();
 
-    Player player1 = new Player(90, 5,100,false,"mahmoud");
-    Player player2 = new Player(10, 5, 100, false, "maryam");
+    Player player1 = new Player(90, 5,100,false,"menna");
+    Player player2 = new Player(10, 5, 100, false, "naglaa");
 
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     ArrayList<Bomb> Bomb = new ArrayList<Bomb>();
@@ -92,7 +92,8 @@ public class TwoPlayerGame extends AnimListener {
 
     @Override
     public void display(GLAutoDrawable gld) {
-
+     System.out.println(player1.name);
+        System.out.println(player2.name);
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);       //Clear The Screen And The Depth Buffer
         gl.glLoadIdentity();
@@ -218,7 +219,8 @@ public class TwoPlayerGame extends AnimListener {
 
                     if (enemies.get(j).health <= 0){
                         player1.count+=1;
-                        System.out.println("hit p1: " + player1.count );
+                        //System.out.println("hit p1: " + player1.count );
+                        System.out.println(player1.name+" "+player1.count);
                         enemies.remove(j);
                     }
                 }
@@ -234,7 +236,8 @@ public class TwoPlayerGame extends AnimListener {
 
                     if (enemies.get(j).health <= 0){
                         player2.count+=1;
-                        System.out.println("hit p2: " + player2.count );
+                       // System.out.println("hit p2: " + player2.count );
+                        System.out.println(player2.name+" "+player2.count);
                         enemies.remove(j);
                     }
                 }
