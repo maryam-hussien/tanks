@@ -1,12 +1,18 @@
 import Textures.AnimListener;
 import Textures.TextureReader;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -104,6 +110,8 @@ public class TwoPlayerGame extends AnimListener {
 
         animationIndex = animationIndex % 4;
 
+
+        playSound(assetsFolderName + "//" + "music-box-1.wav");
         //Draw players
         DrawSprite(gl, player1.x, player1.y, 0, 1.2f);
         DrawSprite(gl, player2.x, player2.y, 1, 1.2f);
@@ -250,6 +258,20 @@ public class TwoPlayerGame extends AnimListener {
         timer++;
 
     }
+
+    public void playSound(String filePath){
+
+        InputStream sound;
+
+        try {
+            sound = new FileInputStream(new File(filePath));
+            AudioStream audios = new AudioStream(sound);
+            AudioPlayer.player.start(audios);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Error");
+        }
+    }
+
     // move bombs
     private void moveBomb(GL gl, int i){
 
